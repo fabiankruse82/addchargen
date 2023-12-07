@@ -9,6 +9,7 @@ function generateAttributes() {
   const attributeValues = [];
 
   for (let i = 0; i < attributes.length; i++) {
+    // Sum the result of 3 dice rolls
     const sumOfDice = rollDie() + rollDie() + rollDie();
     attributeValues.push(sumOfDice);
   }
@@ -23,6 +24,7 @@ function generateAttributes() {
 const attributesArray = generateAttributes();
 console.log(attributesArray);
 
+// Save the result to a text file
 fs.writeFileSync(
   "attributesResult.txt",
   JSON.stringify(attributesArray, null, 2)
