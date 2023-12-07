@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 function rollDie() {
   return Math.floor(Math.random() * 6) + 1;
 }
@@ -7,7 +9,6 @@ function generateAttributes() {
   const attributeValues = [];
 
   for (let i = 0; i < attributes.length; i++) {
-    // Sum the result of 3 dice rolls
     const sumOfDice = rollDie() + rollDie() + rollDie();
     attributeValues.push(sumOfDice);
   }
@@ -21,3 +22,8 @@ function generateAttributes() {
 
 const attributesArray = generateAttributes();
 console.log(attributesArray);
+
+fs.writeFileSync(
+  "attributesResult.txt",
+  JSON.stringify(attributesArray, null, 2)
+);
