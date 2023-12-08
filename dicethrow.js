@@ -68,22 +68,51 @@ if (fs.existsSync("attributesResult.txt")) {
 
 // Function to choose a race based on conditions
 function chooseRace(attributes) {
-  const strCondition = attributes.find((attr) => attr.STR >= 8);
-  const conCondition = attributes.find((attr) => attr.CON <= 11);
-  const dexCondition = attributes.find((attr) => attr.DEX >= 6);
-  const intCondition = attributes.find((attr) => attr.INT >= 8);
-  const chaCondition = attributes.find((attr) => attr.CHA <= 8);
-
+  const strDwarfCondition = attributes.find((attr) => attr.STR >= 8);
+  const conDwarfCondition = attributes.find((attr) => attr.CON >= 11);
+  const dexElfCondition = attributes.find((attr) => attr.DEX >= 6);
+  const conElfCondition = attributes.find((attr) => attr.CON >= 7);
+  const intElfCondition = attributes.find((attr) => attr.INT >= 8);
+  const chaElfCondition = attributes.find((attr) => attr.CHA >= 8);
+  const strGnomeCondition = attributes.find((attr) => attr.STR >= 6);
+  const conGnomeCondition = attributes.find((attr) => attr.CON >= 8);
+  const intGnomeCondition = attributes.find((attr) => attr.INT >= 6);
+  const dexHalfElfCondition = attributes.find((attr) => attr.DEX >= 6);
+  const conHalfElfCondition = attributes.find((attr) => attr.CON >= 6);
+  const intHalfElfCondition = attributes.find((attr) => attr.INT >= 4);
+  const strHalflingCondition = attributes.find((attr) => attr.STR >= 7);
+  const dexHalflingCondition = attributes.find((attr) => attr.DEX >= 7);
+  const conHalflingCondition = attributes.find((attr) => attr.CON >= 10);
+  const intHalflingCondition = attributes.find((attr) => attr.INT >= 6);
   console.log("Available races:");
 
-  if (strCondition && conCondition) {
+  if (strDwarfCondition && conDwarfCondition) {
     console.log("1. Dwarf");
   }
-  if (dexCondition && conCondition && intCondition && chaCondition) {
+  if (
+    dexElfCondition &&
+    conElfCondition &&
+    intElfCondition &&
+    chaElfCondition
+  ) {
     console.log("2. Elf");
   }
+  if (strGnomeCondition && conGnomeCondition && intGnomeCondition) {
+    console.log("3. Gnome");
+  }
+  if (dexHalfElfCondition && conHalfElfCondition && intHalfElfCondition) {
+    console.log("4. Half-Elf");
+  }
 
-  console.log("3. Human (always valid)");
+  if (
+    strHalflingCondition &&
+    dexHalflingCondition &&
+    conHalflingCondition &&
+    intHalflingCondition
+  ) {
+    console.log("5. Halfling");
+  }
+  console.log("6. Human (always valid)");
 
   // Prompt user for choice
   const raceChoice = readlineSync.questionInt(
@@ -98,6 +127,15 @@ function chooseRace(attributes) {
       console.log("You chose Elf!");
       break;
     case 3:
+      console.log("You chose Gnome!");
+      break;
+    case 4:
+      console.log("You chose Half-Elf!");
+      break;
+    case 5:
+      console.log("You chose Halfling (poor man's Hobbit)!");
+      break;
+    case 6:
       console.log("You chose Human!");
       break;
     default:
