@@ -119,26 +119,135 @@ function chooseRace(attributes) {
     "Choose your race (enter the corresponding number): "
   );
 
-  switch (raceChoice) {
-    case 1:
-      console.log("You chose Dwarf!");
-      break;
-    case 2:
-      console.log("You chose Elf!");
-      break;
-    case 3:
-      console.log("You chose Gnome!");
-      break;
-    case 4:
-      console.log("You chose Half-Elf!");
-      break;
-    case 5:
-      console.log("You chose Halfling (poor man's Hobbit)!");
-      break;
-    case 6:
-      console.log("You chose Human!");
-      break;
-    default:
-      console.log("Invalid choice. You are Human by default.");
+  // Function to choose a race based on conditions
+  function applyRaceModifier(attributes, chosenRace) {
+    let raceModifier;
+
+    switch (raceChoice) {
+      case 1:
+        chosenRace = "Dwarf";
+        raceModifier = { CON: 1, CHA: -1 };
+        break;
+      case 2:
+        chosenRace = "Elf";
+        raceModifier = { DEX: 1, CON: -1 };
+        break;
+      case 3:
+        chosenRace = "Gnome";
+        raceModifier = { INT: 1, WIS: -1 };
+        break;
+      case 4:
+        chosenRace = "Half-Elf";
+        // Handle Half-Elf modifier if needed
+        break;
+      case 5:
+        chosenRace = "Halfling";
+        raceModifier = { DEX: 1, STR: -1 };
+        break;
+      case 6:
+        chosenRace = "Human";
+        // No modifier for Human
+        break;
+      default:
+        console.log("Invalid choice. You are Human by default.");
+        chosenRace = "Human";
+      // No modifier for Human
+    }
+
+    console.log(`You chose ${chosenRace}!`);
+
+    // Apply race modifier to attributes
+    const modifiedAttributes = attributes.map((attribute) => {
+      const attributeName = Object.keys(attribute)[0];
+      const attributeValue = attribute[attributeName];
+
+      // Apply race modifier if applicable
+      if (raceModifier && raceModifier[attributeName] !== undefined) {
+        const modifiedValue = attributeValue + raceModifier[attributeName];
+        console.log(
+          `Modified ${attributeName} ${
+            raceModifier[attributeName] > 0 ? "+" : ""
+          }${raceModifier[attributeName]}: ${modifiedValue}`
+        );
+        return { [attributeName]: modifiedValue };
+      }
+
+      return attribute;
+    });
+
+    // Display modified attributes in the console
+    console.log("Modified attributes:");
+    console.log(modifiedAttributes);
+
+    // Save modified attributes to file
+    saveToFile(modifiedAttributes);
+  }
+
+  // Call applyRaceModifier with the correct parameters
+  applyRaceModifier(attributes, raceChoice);
+
+  determineCharacterClass(attributes, raceChoice);
+
+  function determineCharacterClass(modifiedAttributes, chosenRace) {
+    const strFighterCondition = modifiedAttributes.find(
+      (attr) => attr.STR >= 9
+    );
+    const dexThiefCondition = modifiedAttributes.find((attr) => attr.DEX >= 9);
+    const strRangerCondition = modifiedAttributes.find(
+      (attr) => attr.STR >= 13
+    );
+    const dexRangerCondition = modifiedAttributes.find(
+      (attr) => attr.DEX >= 13
+    );
+    const conRangerCondition = modifiedAttributes.find(
+      (attr) => attr.CON >= 14
+    );
+    const wisRangerCondition = modifiedAttributes.find(
+      (attr) => attr.WIS >= 14
+    );
+
+    console.log("\nAvailable character classes:");
+
+    if (strFighterCondition) {
+      console.log("1. Fighter");
+    }
+
+    if (dexThiefCondition) {
+      console.log("2. Thief");
+    }
+
+    if (
+      (chosenRace === "Elf" ||
+        chosenRace === "Human" ||
+        chosenRace === "Half-Elf") &&
+      strRangerCondition &&
+      dexRangerCondition &&
+      conRangerCondition &&
+      wisRangerCondition
+    ) {
+      console.log("3. Ranger");
+    }
+
+    // Prompt user for choice
+    const classChoice = readlineSync.questionInt(
+      "Choose your class (enter the corresponding number): "
+    );
+
+    switch (classChoice) {
+      case 1:
+        chosenClass = "Fighter";
+        break;
+      case 2:
+        chosenClass = "Thief";
+        break;
+      case 3:
+        chosenClass = "Ranger";
+        break;
+      default:
+        console.log("Invalid choice. You are a Farmer by default.");
+        chosenClass = "Farmer";
+    }
+
+    console.log(`You chose ${chosenClass}!`);
   }
 }
