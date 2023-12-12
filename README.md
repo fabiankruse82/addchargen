@@ -5,3 +5,4 @@ AD&amp;D character generator
 2. add races
 3. saves results to *.txt file
 4. can restore previous result
+5. add rudimentary class choice
