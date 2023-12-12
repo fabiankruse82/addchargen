@@ -1,16 +1,16 @@
 const fs = require("fs");
 const readlineSync = require("readline-sync");
 
+// rolls 3 6 side dice for 6 attributes
 function rollDie() {
   return Math.floor(Math.random() * 6) + 1;
 }
-
+// defines attributes
 function generateAttributes() {
   const attributes = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
   const attributeValues = [];
 
   for (let i = 0; i < attributes.length; i++) {
-    // Sum the result of 3 dice rolls
     const sumOfDice = rollDie() + rollDie() + rollDie();
     attributeValues.push(sumOfDice);
   }
@@ -21,7 +21,7 @@ function generateAttributes() {
 
   return result;
 }
-
+// saves results to attributesResults.txt
 function saveToFile(attributesArray) {
   fs.writeFileSync(
     "attributesResult.txt",
@@ -34,7 +34,6 @@ function loadFromFile() {
   return JSON.parse(fileContent);
 }
 
-// Check if the file exists
 if (fs.existsSync("attributesResult.txt")) {
   const reuseContent = readlineSync.keyInYNStrict(
     "There is already a character sheet saved. Reuse?"
@@ -45,7 +44,7 @@ if (fs.existsSync("attributesResult.txt")) {
     console.log("Reusing existing attributes:");
     console.log(existingAttributes);
 
-    // Add the new section for choosing a race
+    //Choose a fantasy race based on attribute requirements
     chooseRace(existingAttributes);
   } else {
     const newAttributes = generateAttributes();
@@ -53,7 +52,6 @@ if (fs.existsSync("attributesResult.txt")) {
     console.log(newAttributes);
     saveToFile(newAttributes);
 
-    // Add the new section for choosing a race
     chooseRace(newAttributes);
   }
 } else {
@@ -62,11 +60,10 @@ if (fs.existsSync("attributesResult.txt")) {
   console.log(newAttributes);
   saveToFile(newAttributes);
 
-  // Add the new section for choosing a race
   chooseRace(newAttributes);
 }
 
-// Function to choose a race based on conditions
+// defines condintions for eligible races
 function chooseRace(attributes) {
   const strDwarfCondition = attributes.find((attr) => attr.STR >= 8);
   const conDwarfCondition = attributes.find((attr) => attr.CON >= 11);
@@ -114,12 +111,11 @@ function chooseRace(attributes) {
   }
   console.log("6. Human (always valid)");
 
-  // Prompt user for choice
   const raceChoice = readlineSync.questionInt(
     "Choose your race (enter the corresponding number): "
   );
 
-  // Function to choose a race based on conditions
+  // modifies exisiting attributes based on user's choice of race
   function applyRaceModifier(attributes, chosenRace) {
     let raceModifier;
 
@@ -138,7 +134,7 @@ function chooseRace(attributes) {
         break;
       case 4:
         chosenRace = "Half-Elf";
-        // Handle Half-Elf modifier if needed
+
         break;
       case 5:
         chosenRace = "Halfling";
@@ -146,12 +142,11 @@ function chooseRace(attributes) {
         break;
       case 6:
         chosenRace = "Human";
-        // No modifier for Human
+
         break;
       default:
         console.log("Invalid choice. You are Human by default.");
         chosenRace = "Human";
-      // No modifier for Human
     }
 
     console.log(`You chose ${chosenRace}!`);
@@ -186,6 +181,7 @@ function chooseRace(attributes) {
   // Call applyRaceModifier with the correct parameters
   applyRaceModifier(attributes, raceChoice);
 
+  // let user choose class based on attributes and race requirements
   determineCharacterClass(attributes, raceChoice);
 
   function determineCharacterClass(modifiedAttributes, chosenRace) {
@@ -193,6 +189,7 @@ function chooseRace(attributes) {
       (attr) => attr.STR >= 9
     );
     const dexThiefCondition = modifiedAttributes.find((attr) => attr.DEX >= 9);
+
     const strRangerCondition = modifiedAttributes.find(
       (attr) => attr.STR >= 13
     );
@@ -205,6 +202,21 @@ function chooseRace(attributes) {
     const wisRangerCondition = modifiedAttributes.find(
       (attr) => attr.WIS >= 14
     );
+    const strPaladinCondition = modifiedAttributes.find(
+      (attr) => attr.STR >= 12
+    );
+    const conPaladinCondition = modifiedAttributes.find(
+      (attr) => attr.CON >= 9
+    );
+    const wisPaladinCondition = modifiedAttributes.find(
+      (attr) => attr.CON >= 13
+    );
+    const chaPaladinCondition = modifiedAttributes.find(
+      (attr) => attr.CHA >= 17
+    );
+    const intMageCondition = modifiedAttributes.find((attr) => attr.INT >= 9);
+
+    const wisClericCondition = modifiedAttributes.find((attr) => attr.WIS >= 9);
 
     console.log("\nAvailable character classes:");
 
@@ -228,26 +240,57 @@ function chooseRace(attributes) {
       console.log("3. Ranger");
     }
 
-    // Prompt user for choice
-    const classChoice = readlineSync.questionInt(
-      "Choose your class (enter the corresponding number): "
-    );
-
-    switch (classChoice) {
-      case 1:
-        chosenClass = "Fighter";
-        break;
-      case 2:
-        chosenClass = "Thief";
-        break;
-      case 3:
-        chosenClass = "Ranger";
-        break;
-      default:
-        console.log("Invalid choice. You are a Farmer by default.");
-        chosenClass = "Farmer";
+    if (
+      chosenRace === "Human" &&
+      strPaladinCondition &&
+      conPaladinCondition &&
+      wisPaladinCondition &&
+      chaPaladinCondition
+    ) {
+      console.log("4. Paladin");
     }
 
-    console.log(`You chose ${chosenClass}!`);
+    if (wisClericCondition) {
+      console.log("5. Cleric");
+    }
+
+    if (
+      (chosenRace === "Elf" ||
+        chosenRace === "Human" ||
+        chosenRace === "Half-Elf") &&
+      intMageCondition
+    ) {
+      console.log("6. Mage");
+    }
   }
+
+  const classChoice = readlineSync.questionInt(
+    "Choose your class (enter the corresponding number): "
+  );
+  switch (classChoice) {
+    case 1:
+      chosenClass = "Fighter";
+      break;
+    case 2:
+      chosenClass = "Thief";
+      break;
+    case 3:
+      chosenClass = "Ranger";
+      break;
+    case 4:
+      chosenClass = "Paladin";
+      break;
+    case 5:
+      chosenClass = "Cleric";
+      break;
+    case 6:
+      chosenClass = "Mage";
+      break;
+
+    default:
+      console.log("Invalid choice. You are a Peasant by default.");
+      chosenClass = "Peasant";
+  }
+
+  console.log(`You chose ${chosenClass}!`);
 }
