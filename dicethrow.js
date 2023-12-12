@@ -218,6 +218,13 @@ function chooseRace(attributes) {
 
     const wisClericCondition = modifiedAttributes.find((attr) => attr.WIS >= 9);
 
+    function isRangerRace(chosenRace) {
+      return (
+        chosenRace === "Elf" ||
+        chosenRace === "Human" ||
+        chosenRace === "Half-Elf"
+      );
+    }
     console.log("\nAvailable character classes:");
 
     if (strFighterCondition) {
@@ -229,9 +236,7 @@ function chooseRace(attributes) {
     }
 
     if (
-      (chosenRace === "Elf" ||
-        chosenRace === "Human" ||
-        chosenRace === "Half-Elf") &&
+      isRangerRace(chosenRace) &&
       strRangerCondition &&
       dexRangerCondition &&
       conRangerCondition &&
@@ -240,57 +245,59 @@ function chooseRace(attributes) {
       console.log("3. Ranger");
     }
 
-    if (
-      chosenRace === "Human" &&
-      strPaladinCondition &&
-      conPaladinCondition &&
-      wisPaladinCondition &&
-      chaPaladinCondition
-    ) {
-      console.log("4. Paladin");
-    }
-
-    if (wisClericCondition) {
-      console.log("5. Cleric");
-    }
-
-    if (
-      (chosenRace === "Elf" ||
-        chosenRace === "Human" ||
-        chosenRace === "Half-Elf") &&
-      intMageCondition
-    ) {
-      console.log("6. Mage");
-    }
+    console.log("3. Ranger");
   }
 
-  const classChoice = readlineSync.questionInt(
-    "Choose your class (enter the corresponding number): "
-  );
-  switch (classChoice) {
-    case 1:
-      chosenClass = "Fighter";
-      break;
-    case 2:
-      chosenClass = "Thief";
-      break;
-    case 3:
-      chosenClass = "Ranger";
-      break;
-    case 4:
-      chosenClass = "Paladin";
-      break;
-    case 5:
-      chosenClass = "Cleric";
-      break;
-    case 6:
-      chosenClass = "Mage";
-      break;
-
-    default:
-      console.log("Invalid choice. You are a Peasant by default.");
-      chosenClass = "Peasant";
+  if (
+    chosenRace === "Human" &&
+    strPaladinCondition &&
+    conPaladinCondition &&
+    wisPaladinCondition &&
+    chaPaladinCondition
+  ) {
+    console.log("4. Paladin");
   }
 
-  console.log(`You chose ${chosenClass}!`);
+  if (wisClericCondition) {
+    console.log("5. Cleric");
+  }
+
+  if (
+    (chosenRace === "Elf" ||
+      chosenRace === "Human" ||
+      chosenRace === "Half-Elf") &&
+    intMageCondition
+  ) {
+    console.log("6. Mage");
+  }
 }
+
+const classChoice = readlineSync.questionInt(
+  "Choose your class (enter the corresponding number): "
+);
+switch (classChoice) {
+  case 1:
+    chosenClass = "Fighter";
+    break;
+  case 2:
+    chosenClass = "Thief";
+    break;
+  case 3:
+    chosenClass = "Ranger";
+    break;
+  case 4:
+    chosenClass = "Paladin";
+    break;
+  case 5:
+    chosenClass = "Cleric";
+    break;
+  case 6:
+    chosenClass = "Mage";
+    break;
+
+  default:
+    console.log("Invalid choice. You are a Peasant by default.");
+    chosenClass = "Peasant";
+}
+
+console.log(`You chose ${chosenClass}!`);
